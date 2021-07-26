@@ -9,7 +9,7 @@ import { CrawlOptions } from "./types";
 const seenImages = new Set();
 const seenPages = new Set();
 
-/* Extract and save images from dom */
+/** Extract and save images from dom */
 function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions) {
   dom.window.document.querySelectorAll("img").forEach(({ src }) => {
     if (src && !seenImages.has(src)) {
@@ -19,6 +19,7 @@ function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions) {
   });
 }
 
+/** Check if URL should be crawled */
 function shouldCrawlUrl(url: URL, referrer: URL, mode: string): boolean {
   if (!url) return false;
   if (mode === "all") return true;
@@ -27,7 +28,7 @@ function shouldCrawlUrl(url: URL, referrer: URL, mode: string): boolean {
     return url.origin === referrer.origin && url.pathname === referrer.pathname;
 }
 
-/* Find links in dom and crawl each of them */
+/** Find links in dom and crawl each of them */
 function crawlLinks(dom: JSDOM, origin: URL, options: CrawlOptions) {
   dom.window.document.querySelectorAll("a").forEach(({ href }) => {
     const url = new URL(href, origin);
@@ -37,7 +38,7 @@ function crawlLinks(dom: JSDOM, origin: URL, options: CrawlOptions) {
   });
 }
 
-/* Crawl url */
+/** Crawl url */
 async function crawl(url: URL, origin: URL, options: CrawlOptions) {
   if (seenPages.has(url.href)) {
     return;

@@ -4,16 +4,18 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuid } from "uuid";
 
-import Options from "./CrawlOptions";
+import { CrawlOptions } from "./types";
 
+/** Generate radnom image name */
 export function createImageName(url: string): string {
   const extension = path.extname(url);
   return uuid() + extension;
 }
 
+/** Download and save image to file */
 export async function fetchAndSaveImage(
   url: URL,
-  options: Options
+  options: CrawlOptions
 ): Promise<void> {
   const resp = await fetch(url).catch(() => {
     /* eslint-disable-next-line no-console */
