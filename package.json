@@ -1,19 +1,20 @@
 {
-  "name": "book-crawler",
+  "name": "web-crawler",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint 'src/**/*.ts' --max-warnings 0",
     "transpile": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm run lint && npm run test"
+      "pre-push": "npm run lint && npm run test:coverage"
     }
   },
   "lint-staged": {
