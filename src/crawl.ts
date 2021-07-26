@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as utils from "./utils";
-import CrawlOptions from "./CrawlOptions";
+import { CrawlOptions } from "./types";
 
 const seenImages = new Set();
 const seenPages = new Set();
