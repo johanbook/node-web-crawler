@@ -10,7 +10,7 @@ const seenImages = new Set();
 const seenPages = new Set();
 
 /** Extract and save images from dom */
-function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions) {
+function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions): void {
   dom.window.document.querySelectorAll("img").forEach(({ src }) => {
     if (src && !seenImages.has(src)) {
       seenImages.add(src);
@@ -39,7 +39,11 @@ function crawlLinks(dom: JSDOM, origin: URL, options: CrawlOptions) {
 }
 
 /** Crawl url */
-async function crawl(url: URL, origin: URL, options: CrawlOptions) {
+export async function crawl(
+  url: URL,
+  origin: URL,
+  options: CrawlOptions
+): void {
   if (seenPages.has(url.href)) {
     return;
   }
