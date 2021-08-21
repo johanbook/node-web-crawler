@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import fs from "fs";
 import path from "path";
 import { v4 as uuid } from "uuid";
@@ -17,11 +17,17 @@ export async function fetchAndSaveImage(
   url: URL,
   options: CrawlOptions
 ): Promise<void> {
-  const resp = await fetch(url).catch(() => {
+  let resp: Response;
+
+  try {
+    resp = await fetch(url);
+  } catch {
     /* eslint-disable-next-line no-console */
     console.error(chalk.red(`Failed to download ${url}`));
-  });
-  if (!resp || !resp.ok) {
+    return;
+  }
+
+  if (!resp.ok) {
     return;
   }
 

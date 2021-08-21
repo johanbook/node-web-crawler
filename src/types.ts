@@ -1,6 +1,10 @@
+type CrawlMode = "all" | "origin" | "pathname";
+
 export interface CrawlOptions {
   /** If Javascript in crawled pages should be executed */
   executeJs?: boolean;
-  mode: "all" | "origin" | "pathname";
+  /** Which found URLS should be crawled */
+  mode: CrawlMode;
+  /** To which directory should data be output */
   outputDir: string;
 }
