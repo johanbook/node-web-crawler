@@ -43,7 +43,7 @@ export async function crawl(
   url: URL,
   origin: URL,
   options: CrawlOptions
-): void {
+): Promise<void> {
   if (seenPages.has(url.href)) {
     return;
   }
