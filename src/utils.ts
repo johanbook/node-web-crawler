@@ -21,7 +21,7 @@ export async function fetchAndSaveImage(
     /* eslint-disable-next-line no-console */
     console.error(chalk.red(`Failed to download ${url}`));
   });
-  if (!resp.ok) {
+  if (!resp || !resp.ok) {
     return;
   }
 
