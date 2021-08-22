@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 import * as logger from "./logger";
 import { CrawlOptions } from "./types";
-import * as fs from "./utils/fs";
+import { directoryExists } from "./utils/fs";
 import * as image from "./utils/image";
 import { shouldCrawlUrl } from "./utils/url";
 
@@ -14,7 +14,11 @@ interface CrawlState extends CrawlOptions {
 }
 
 /** Extracts and saves images from DOM */
-function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
+function extractImagesFromDom(
+  dom: JSDOM,
+  origin: URL,
+  state: CrawlState
+): void {
   dom.window.document.querySelectorAll("img").forEach(({ src }) => {
     if (!src || state.seenImages.has(src)) {
       return;
@@ -26,17 +30,17 @@ function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
 }
 
 /** Finds links in DOM and crawls each of them */
-function crawlLinks(dom: JSDOM, origin: URL, state: CrawlState) {
+function crawlDomLinks(dom: JSDOM, origin: URL, state: CrawlState) {
   dom.window.document.querySelectorAll("a").forEach(({ href }) => {
     const url = new URL(href, origin);
     if (shouldCrawlUrl(url, origin, state.mode)) {
-      crawl(url, origin, state);
+      createAndCrawlDom(url, origin, state);
     }
   });
 }
 
-/** Crawls URL */
-export async function crawl(
+/** Creates a JSDOM and crawls it */
+export async function createAndCrawlDom(
   url: URL,
   origin: URL,
   state: CrawlState
@@ -66,16 +70,16 @@ export async function crawl(
     state.onDomCreated(dom);
   }
 
-  crawlLinks(dom, origin, state);
-  extractImages(dom, origin, state);
+  crawlDomLinks(dom, origin, state);
+  extractImagesFromDom(dom, origin, state);
 }
 
-/** Verify options and begins crawl */
-export default async function setup(
+/** Crawls supplied URL for images */
+export default async function crawl(
   url: string,
   options: CrawlOptions
 ): Promise<void> {
-  if (!fs.directoryExists(options.outputDir)) {
+  if (!directoryExists(options.outputDir)) {
     logger.error(
       chalk.red.bold("Error:"),
       chalk.reset(`Output folder '${options.outputDir}' does not exist`)
@@ -95,5 +99,5 @@ export default async function setup(
   };
 
   const originUrl = new URL(url);
-  await crawl(originUrl, originUrl, crawlState);
+  await createAndCrawlDom(originUrl, originUrl, crawlState);
 }
