@@ -6,8 +6,8 @@ import crawl from "./crawl";
 
 const program = new Command();
 program
-  .version("0.0.1")
-  .name("crawl")
+  .version("1.0.0")
+  .name("node-web-crawl")
   .arguments("<url>")
   .description("crawl a site and download all encountered images", {
     url: "initial url where to start crawl",
