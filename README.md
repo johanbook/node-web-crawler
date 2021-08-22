@@ -1,6 +1,6 @@
 # node-web-crawler
 
-A simplistic Nodejs CLI for web crawling.
+A simplistic Nodejs CLI for web crawling images.
 
 ## Installation
 
