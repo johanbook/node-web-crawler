@@ -90,4 +90,20 @@ describe("crawl", () => {
     await crawl(url.href, { ...OPTIONS, mode: "origin" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("can execute scripts", async () => {
+    directoryExistsMock.mockReturnValueOnce(true);
+    fetchMock.mockResponseOnce(fixtures.HTML.SCRIPT);
+
+    let result = "";
+    const handleDomCreated = (dom) => (result = dom.window.SCRIPT_TAG);
+
+    await crawl(url.href, {
+      ...OPTIONS,
+      executeJs: true,
+      onDomCreated: handleDomCreated,
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(result).toBe("my-script-run");
+  });
 });

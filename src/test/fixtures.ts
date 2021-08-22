@@ -18,6 +18,7 @@ export const HTML = {
   DUPLICATE_IMAGE: `<html><img src="${STRING_URLS.IMAGE}"/><img src="${STRING_URLS.IMAGE}"/></html>`,
   EMPTY: `<html></html>`,
   EXTERNAL_LINK: `<html><a href="${STRING_URLS.DIFFERENT_DOMAIN}"/></html>`,
+  SCRIPT: `<html><script>window.SCRIPT_TAG = "my-script-run";</script></html>`,
   SINGLE_IMAGE: `<html><img src="${STRING_URLS.IMAGE}"/></html>`,
   SINGLE_LINK: `<html><a href="${STRING_URLS.LINK}"/></html>`,
 };

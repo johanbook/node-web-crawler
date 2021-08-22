@@ -62,6 +62,10 @@ export async function crawl(
     domOptions.runScripts = "dangerously";
   }
   const dom = new JSDOM(html, domOptions);
+  if (state.onDomCreated) {
+    state.onDomCreated(dom);
+  }
+
   crawlLinks(dom, origin, state);
   extractImages(dom, origin, state);
 }
