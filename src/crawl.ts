@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as utils from "./utils";
-import { CrawlOptions } from "./types";
+import { CrawlMode, CrawlOptions } from "./types";
 
 const seenImages = new Set();
 const seenPages = new Set();
@@ -20,7 +20,7 @@ function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions): void {
 }
 
 /** Check if URL should be crawled */
-function shouldCrawlUrl(url: URL, referrer: URL, mode: string): boolean {
+function shouldCrawlUrl(url: URL, referrer: URL, mode: CrawlMode): boolean {
   if (!url) return false;
   if (mode === "all") return true;
   if (mode === "origin") return url.origin === referrer.origin;

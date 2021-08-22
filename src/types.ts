@@ -1,4 +1,4 @@
-type CrawlMode = "all" | "origin" | "pathname";
+export type CrawlMode = "all" | "origin" | "pathname";
 
 export interface CrawlOptions {
   /** If Javascript in crawled pages should be executed */
