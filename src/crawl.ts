@@ -4,19 +4,23 @@ import * as fs from "./utils/fs";
 import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as logger from "./logger";
-import * as utils from "./utils/image";
+import * as image from "./utils/image";
 import { CrawlMode, CrawlOptions } from "./types";
 
-const seenImages = new Set();
-const seenPages = new Set();
+interface CrawlState extends CrawlOptions {
+  seenImages: Set<string>;
+  seenPages: Set<string>;
+}
 
 /** Extract and save images from dom */
-function extractImages(dom: JSDOM, origin: URL, options: CrawlOptions): void {
+function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
   dom.window.document.querySelectorAll("img").forEach(({ src }) => {
-    if (src && !seenImages.has(src)) {
-      seenImages.add(src);
-      utils.fetchAndSaveImage(new URL(src, origin), options);
+    if (!src || state.seenImages.has(src)) {
+      return;
     }
+
+    state.seenImages.add(src);
+    image.fetchAndSaveImage(new URL(src, origin), state);
   });
 }
 
@@ -30,11 +34,11 @@ function shouldCrawlUrl(url: URL, referrer: URL, mode: CrawlMode): boolean {
 }
 
 /** Find links in dom and crawl each of them */
-function crawlLinks(dom: JSDOM, origin: URL, options: CrawlOptions) {
+function crawlLinks(dom: JSDOM, origin: URL, state: CrawlState) {
   dom.window.document.querySelectorAll("a").forEach(({ href }) => {
     const url = new URL(href, origin);
-    if (shouldCrawlUrl(url, origin, options.mode)) {
-      crawl(url, origin, options);
+    if (shouldCrawlUrl(url, origin, state.mode)) {
+      crawl(url, origin, state);
     }
   });
 }
@@ -43,12 +47,12 @@ function crawlLinks(dom: JSDOM, origin: URL, options: CrawlOptions) {
 export async function crawl(
   url: URL,
   origin: URL,
-  options: CrawlOptions
+  state: CrawlState
 ): Promise<void> {
-  if (seenPages.has(url.href)) {
+  if (state.seenPages.has(url.href)) {
     return;
   }
-  seenPages.add(url.href);
+  state.seenPages.add(url.href);
 
   logger.info(
     chalk`{blue \u1433} {gray Crawling} {green ${url.host + url.pathname}}`
@@ -58,17 +62,20 @@ export async function crawl(
   const html = await resp.text();
 
   const domOptions: ConstructorOptions = {};
-  if (options.executeJs) {
+  if (state.executeJs) {
     domOptions.resources = "usable";
     domOptions.runScripts = "dangerously";
   }
   const dom = new JSDOM(html, domOptions);
-  crawlLinks(dom, origin, options);
-  extractImages(dom, origin, options);
+  crawlLinks(dom, origin, state);
+  extractImages(dom, origin, state);
 }
 
 /** Verify options and then begin crawl */
-export default function setup(url: string, options: CrawlOptions): void {
+export default async function setup(
+  url: string,
+  options: CrawlOptions
+): Promise<void> {
   if (!fs.directoryExists(options.outputDir)) {
     logger.error(
       chalk.red.bold("Error:"),
@@ -76,10 +83,18 @@ export default function setup(url: string, options: CrawlOptions): void {
     );
     process.exit(1);
   }
-  if (!url.includes("https")) {
+
+  // TODO: Check regexp
+  if (!url.includes("http")) {
     url = "https://" + url;
   }
 
+  const crawlState: CrawlState = {
+    ...options,
+    seenImages: new Set<string>(),
+    seenPages: new Set<string>(),
+  };
+
   const originUrl = new URL(url);
-  crawl(originUrl, originUrl, options);
+  await crawl(originUrl, originUrl, crawlState);
 }

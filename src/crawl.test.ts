@@ -1,38 +1,56 @@
 import "jest-fetch-mock";
+import * as image from "./utils/image";
 import * as fs from "./utils/fs";
-import setup, { crawl } from "./crawl";
+import crawl from "./crawl";
 import { fixtures } from "./test";
+import { CrawlOptions } from "./types";
 
 jest.mock("./utils/fs");
+jest.mock("./utils/image");
 
 const url = new URL("http://localhost");
 
+const OPTIONS: CrawlOptions = { mode: "all", outputDir: "my-dir" };
+
+const fetchAndSaveImageMock = image.fetchAndSaveImage as jest.MockedFunction<
+  typeof image.fetchAndSaveImage
+>;
 const directoryExistsMock = fs.directoryExists as jest.MockedFunction<
   typeof fs.directoryExists
 >;
 
 beforeEach(() => {
+  fetchAndSaveImageMock.mockReset();
   fetchMock.resetMocks();
 });
 
 describe("crawl", () => {
   it("calls fetch", async () => {
-    fetchMock.mockResponseOnce(fixtures.HTML.EMPTY);
-    await crawl(url, url, { mode: "all", outputDir: "./out" });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("setup", () => {
-  it("works", () => {
     directoryExistsMock.mockReturnValueOnce(true);
     fetchMock.mockResponseOnce(fixtures.HTML.EMPTY);
 
-    setup(url.href, { mode: "all", outputDir: "" });
+    await crawl(url.href, OPTIONS);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it("exits on non-existent output directory", () => {
+  it("can crawl link", async () => {
+    directoryExistsMock.mockReturnValueOnce(true);
+    fetchMock.mockResponseOnce(fixtures.HTML.SINGLE_LINK);
+
+    await crawl(url.href, OPTIONS);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("can crawl image", async () => {
+    directoryExistsMock.mockReturnValueOnce(true);
+    fetchMock.mockResponseOnce(fixtures.HTML.SINGLE_IMAGE);
+
+    await crawl(url.href, OPTIONS);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchAndSaveImageMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("exits on non-existent output directory", async () => {
     directoryExistsMock.mockReturnValueOnce(false);
     fetchMock.mockResponseOnce(fixtures.HTML.EMPTY);
 
@@ -40,7 +58,7 @@ describe("setup", () => {
       return undefined as never;
     });
 
-    setup(url.href, { mode: "all", outputDir: "does-not-exist" });
+    await crawl(url.href, { ...OPTIONS, outputDir: "does-not-exist" });
     expect(mockExit).toHaveBeenCalledWith(1);
 
     mockExit.mockRestore();
