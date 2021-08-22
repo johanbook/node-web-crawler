@@ -3,7 +3,8 @@ import fetch from "node-fetch";
 import * as fs from "fs";
 import { JSDOM, ConstructorOptions } from "jsdom";
 
-import * as utils from "./utils";
+import * as logger from "./logger";
+import * as utils from "./utils/image";
 import { CrawlMode, CrawlOptions } from "./types";
 
 const seenImages = new Set();
@@ -49,8 +50,7 @@ export async function crawl(
   }
   seenPages.add(url.href);
 
-  /* eslint-disable no-console */
-  console.info(
+  logger.info(
     chalk`{blue \u1433} {gray Crawling} {green ${url.host + url.pathname}}`
   );
 
@@ -70,8 +70,7 @@ export async function crawl(
 /** Verify options and then begin crawl */
 export default function setup(url: string, options: CrawlOptions): void {
   if (!fs.existsSync(options.outputDir)) {
-    /* eslint-disable no-console */
-    console.error(
+    logger.error(
       chalk.red.bold("Error:"),
       chalk.reset(`Output folder '${options.outputDir}' does not exist`)
     );

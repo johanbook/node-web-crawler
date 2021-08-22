@@ -7,10 +7,6 @@ jest.mock("fs", () => ({
 
 const url = new URL("http://localhost");
 
-// Hide function echo
-/* eslint-disable-next-line no-console */
-console.info = jest.fn();
-
 beforeEach(() => {
   fetchMock.resetMocks();
 });

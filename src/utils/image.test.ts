@@ -1,15 +1,11 @@
 import "jest-fetch-mock";
-import * as utils from "./utils";
+import * as utils from "./image";
 import fs from "fs";
 
 jest.mock("fs");
 jest.mock("uuid", () => ({
   v4: () => "uuid",
 }));
-
-// Hide function echo
-/* eslint-disable-next-line no-console */
-console.log = jest.fn();
 
 const writeFileMock = fs.writeFileSync as jest.Mock<typeof fs.writeFileSync>;
 
