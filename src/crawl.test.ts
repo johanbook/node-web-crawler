@@ -8,7 +8,7 @@ import { CrawlOptions } from "./types";
 jest.mock("./utils/fs");
 jest.mock("./utils/image");
 
-const url = new URL(fixtures.URLS.BASE_URL);
+const url = fixtures.URLS.BASE_URL;
 
 const OPTIONS: CrawlOptions = { mode: "all", outputDir: "my-dir" };
 
@@ -42,7 +42,10 @@ describe("crawl", () => {
 
     await crawl(url.href, { ...OPTIONS, onCrawlLink: handleCrawlLink });
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(links).toEqual([fixtures.URLS.BASE_URL, fixtures.URLS.LINK]);
+    expect(links).toEqual([
+      fixtures.STRING_URLS.BASE_URL,
+      fixtures.STRING_URLS.LINK,
+    ]);
   });
 
   it("ignores duplicate images", async () => {
@@ -66,5 +69,16 @@ describe("crawl", () => {
     expect(mockExit).toHaveBeenCalledWith(1);
 
     mockExit.mockRestore();
+  });
+
+  it("ignores duplicate links", async () => {
+    directoryExistsMock.mockReturnValueOnce(true);
+    fetchMock.mockResponseOnce(fixtures.HTML.EMPTY);
+
+    const links = [];
+    const handleCrawlLink = (url: string) => links.push(url);
+
+    await crawl("example.com", { ...OPTIONS, onCrawlLink: handleCrawlLink });
+    expect(links).toEqual(["https://example.com/"]);
   });
 });

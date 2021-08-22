@@ -5,7 +5,8 @@ import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as logger from "./logger";
 import * as image from "./utils/image";
-import { CrawlMode, CrawlOptions } from "./types";
+import { CrawlOptions } from "./types";
+import { shouldCrawlUrl } from "./utils/url";
 
 interface CrawlState extends CrawlOptions {
   seenImages: Set<string>;
@@ -22,15 +23,6 @@ function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
     state.seenImages.add(src);
     image.fetchAndSaveImage(new URL(src, origin), state);
   });
-}
-
-/** Checks if URL should be crawled */
-function shouldCrawlUrl(url: URL, referrer: URL, mode: CrawlMode): boolean {
-  if (!url) return false;
-  if (mode === "all") return true;
-  if (mode === "origin") return url.origin === referrer.origin;
-  if (mode === "pathname")
-    return url.origin === referrer.origin && url.pathname === referrer.pathname;
 }
 
 /** Finds links in DOM and crawls each of them */
