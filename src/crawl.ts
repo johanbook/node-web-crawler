@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import fetch from "node-fetch";
-import * as fs from "fs";
+import * as fs from "./utils/fs";
 import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as logger from "./logger";
@@ -69,7 +69,7 @@ export async function crawl(
 
 /** Verify options and then begin crawl */
 export default function setup(url: string, options: CrawlOptions): void {
-  if (!fs.existsSync(options.outputDir)) {
+  if (!fs.directoryExists(options.outputDir)) {
     logger.error(
       chalk.red.bold("Error:"),
       chalk.reset(`Output folder '${options.outputDir}' does not exist`)

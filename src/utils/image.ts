@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import fetch from "node-fetch";
-import fs from "fs";
+import * as fs from "./fs";
 import path from "path";
 import { v4 as uuid } from "uuid";
 
@@ -25,7 +25,7 @@ async function fetchImage(url: URL): Promise<Buffer> {
 /** Saves image to folder. Name is generated from URL. */
 function saveImage(url: URL, directory: string, buffer: Buffer): void {
   const name = createImageName(url.pathname);
-  fs.writeFileSync(`${directory}/${name}`, buffer);
+  fs.writeFile(`${directory}/${name}`, buffer);
 }
 
 /** Downloads and save image to file */
