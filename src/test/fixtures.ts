@@ -17,6 +17,7 @@ export const HTML = {
   DUPLICATE_LINK: `<html><a href="${STRING_URLS.LINK}"/><a href="${STRING_URLS.LINK}"/></html>`,
   DUPLICATE_IMAGE: `<html><img src="${STRING_URLS.IMAGE}"/><img src="${STRING_URLS.IMAGE}"/></html>`,
   EMPTY: `<html></html>`,
+  EXTERNAL_LINK: `<html><a href="${STRING_URLS.DIFFERENT_DOMAIN}"/></html>`,
   SINGLE_IMAGE: `<html><img src="${STRING_URLS.IMAGE}"/></html>`,
   SINGLE_LINK: `<html><a href="${STRING_URLS.LINK}"/></html>`,
 };

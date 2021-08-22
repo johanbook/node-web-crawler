@@ -81,4 +81,12 @@ describe("crawl", () => {
     await crawl("example.com", { ...OPTIONS, onCrawlLink: handleCrawlLink });
     expect(links).toEqual(["https://example.com/"]);
   });
+
+  it("respects crawl mode", async () => {
+    directoryExistsMock.mockReturnValueOnce(true);
+    fetchMock.mockResponseOnce(fixtures.HTML.EXTERNAL_LINK);
+
+    await crawl(url.href, { ...OPTIONS, mode: "origin" });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });
