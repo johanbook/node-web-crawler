@@ -8,8 +8,7 @@ import { CrawlOptions } from "./types";
 jest.mock("./utils/fs");
 jest.mock("./utils/image");
 
-const BASE_URL = "http://localhost/";
-const url = new URL(BASE_URL);
+const url = new URL(fixtures.URLS.BASE_URL);
 
 const OPTIONS: CrawlOptions = { mode: "all", outputDir: "my-dir" };
 
@@ -34,21 +33,21 @@ describe("crawl", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it("can crawl link", async () => {
+  it("ignores duplicate links", async () => {
     directoryExistsMock.mockReturnValueOnce(true);
-    fetchMock.mockResponseOnce(fixtures.HTML.SINGLE_LINK);
+    fetchMock.mockResponseOnce(fixtures.HTML.DUPLICATE_LINK);
 
     const links = [];
     const handleCrawlLink = (url: string) => links.push(url);
 
     await crawl(url.href, { ...OPTIONS, onCrawlLink: handleCrawlLink });
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(links).toEqual([BASE_URL, BASE_URL + "my-page"]);
+    expect(links).toEqual([fixtures.URLS.BASE_URL, fixtures.URLS.LINK]);
   });
 
-  it("can crawl image", async () => {
+  it("ignores duplicate images", async () => {
     directoryExistsMock.mockReturnValueOnce(true);
-    fetchMock.mockResponseOnce(fixtures.HTML.SINGLE_IMAGE);
+    fetchMock.mockResponseOnce(fixtures.HTML.DUPLICATE_IMAGE);
 
     await crawl(url.href, OPTIONS);
     expect(fetchMock).toHaveBeenCalledTimes(1);

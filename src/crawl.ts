@@ -12,7 +12,7 @@ interface CrawlState extends CrawlOptions {
   seenPages: Set<string>;
 }
 
-/** Extract and save images from dom */
+/** Extracts and saves images from DOM */
 function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
   dom.window.document.querySelectorAll("img").forEach(({ src }) => {
     if (!src || state.seenImages.has(src)) {
@@ -24,7 +24,7 @@ function extractImages(dom: JSDOM, origin: URL, state: CrawlState): void {
   });
 }
 
-/** Check if URL should be crawled */
+/** Checks if URL should be crawled */
 function shouldCrawlUrl(url: URL, referrer: URL, mode: CrawlMode): boolean {
   if (!url) return false;
   if (mode === "all") return true;
@@ -33,7 +33,7 @@ function shouldCrawlUrl(url: URL, referrer: URL, mode: CrawlMode): boolean {
     return url.origin === referrer.origin && url.pathname === referrer.pathname;
 }
 
-/** Find links in dom and crawl each of them */
+/** Finds links in DOM and crawls each of them */
 function crawlLinks(dom: JSDOM, origin: URL, state: CrawlState) {
   dom.window.document.querySelectorAll("a").forEach(({ href }) => {
     const url = new URL(href, origin);
@@ -43,7 +43,7 @@ function crawlLinks(dom: JSDOM, origin: URL, state: CrawlState) {
   });
 }
 
-/** Crawl url */
+/** Crawls URL */
 export async function crawl(
   url: URL,
   origin: URL,
@@ -74,7 +74,7 @@ export async function crawl(
   extractImages(dom, origin, state);
 }
 
-/** Verify options and then begin crawl */
+/** Verify options and begins crawl */
 export default async function setup(
   url: string,
   options: CrawlOptions
