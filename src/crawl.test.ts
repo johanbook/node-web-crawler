@@ -8,7 +8,8 @@ import { CrawlOptions } from "./types";
 jest.mock("./utils/fs");
 jest.mock("./utils/image");
 
-const url = new URL("http://localhost");
+const BASE_URL = "http://localhost/";
+const url = new URL(BASE_URL);
 
 const OPTIONS: CrawlOptions = { mode: "all", outputDir: "my-dir" };
 
@@ -37,8 +38,12 @@ describe("crawl", () => {
     directoryExistsMock.mockReturnValueOnce(true);
     fetchMock.mockResponseOnce(fixtures.HTML.SINGLE_LINK);
 
-    await crawl(url.href, OPTIONS);
+    const links = [];
+    const handleCrawlLink = (url: string) => links.push(url);
+
+    await crawl(url.href, { ...OPTIONS, onCrawlLink: handleCrawlLink });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(links).toEqual([BASE_URL, BASE_URL + "my-page"]);
   });
 
   it("can crawl image", async () => {

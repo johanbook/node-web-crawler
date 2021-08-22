@@ -5,6 +5,8 @@ export interface CrawlOptions {
   executeJs?: boolean;
   /** Which found URLS should be crawled */
   mode: CrawlMode;
+  /** Function fired before a new link is crawled */
+  onCrawlLink?(url: string): void;
   /** To which directory should data be output */
   outputDir: string;
 }

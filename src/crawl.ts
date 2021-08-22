@@ -52,6 +52,9 @@ export async function crawl(
   if (state.seenPages.has(url.href)) {
     return;
   }
+  if (state.onCrawlLink) {
+    state.onCrawlLink(url.href);
+  }
   state.seenPages.add(url.href);
 
   logger.info(
@@ -84,7 +87,7 @@ export default async function setup(
     process.exit(1);
   }
 
-  // TODO: Check regexp
+  // TODO: Use regexp check
   if (!url.includes("http")) {
     url = "https://" + url;
   }
