@@ -1,11 +1,11 @@
 import chalk from "chalk";
+import { ConstructorOptions, JSDOM } from "jsdom";
 import fetch from "node-fetch";
-import * as fs from "./utils/fs";
-import { JSDOM, ConstructorOptions } from "jsdom";
 
 import * as logger from "./logger";
-import * as image from "./utils/image";
 import { CrawlOptions } from "./types";
+import * as fs from "./utils/fs";
+import * as image from "./utils/image";
 import { shouldCrawlUrl } from "./utils/url";
 
 interface CrawlState extends CrawlOptions {

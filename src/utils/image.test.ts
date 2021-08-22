@@ -1,6 +1,8 @@
 import "jest-fetch-mock";
-import * as utils from "./image";
+
 import fs from "fs";
+
+import * as utils from "./image";
 
 jest.mock("fs");
 jest.mock("uuid", () => ({

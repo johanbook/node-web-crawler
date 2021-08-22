@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
+    "format": "prettier --write '{scripts,src}/**/*.{js,jsx,ts,tsx}'",
     "lint": "eslint 'src/**/*.ts' --max-warnings 0",
     "transpile": "tsc",
     "test": "jest",
@@ -21,6 +22,11 @@
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write --prose-wrap always"
     ]
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "react"
+    }
   },
   "dependencies": {
     "@types/uuid": "^8.3.1",
@@ -40,10 +46,12 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-unicorn": "^23.0.0",
     "husky": "^4.3.0",
+    "import-sort-style-react": "^5.1.0",
     "jest": "^26.6.3",
     "jest-fetch-mock": "^3.0.3",
     "lint-staged": "^10.5.2",
     "prettier": "^2.2.0",
+    "prettier-plugin-import-sort": "^0.0.7",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.0.0",
     "typescript": "^4.1.2"

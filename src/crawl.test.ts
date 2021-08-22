@@ -1,9 +1,10 @@
 import "jest-fetch-mock";
-import * as image from "./utils/image";
-import * as fs from "./utils/fs";
+
 import crawl from "./crawl";
 import { fixtures } from "./test";
 import { CrawlOptions } from "./types";
+import * as fs from "./utils/fs";
+import * as image from "./utils/image";
 
 jest.mock("./utils/fs");
 jest.mock("./utils/image");

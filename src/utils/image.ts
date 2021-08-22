@@ -1,11 +1,12 @@
+import path from "path";
+
 import chalk from "chalk";
 import fetch from "node-fetch";
-import * as fs from "./fs";
-import path from "path";
 import { v4 as uuid } from "uuid";
 
 import * as logger from "../logger";
 import { CrawlOptions } from "../types";
+import * as fs from "./fs";
 
 /** Generates random image name */
 export function createImageName(url: string): string {
