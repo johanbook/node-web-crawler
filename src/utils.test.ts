@@ -1,9 +1,8 @@
+import "jest-fetch-mock";
 import * as utils from "./utils";
-import fetchMock from "node-fetch";
 import fs from "fs";
 
 jest.mock("fs");
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 jest.mock("uuid", () => ({
   v4: () => "uuid",
 }));
@@ -21,7 +20,7 @@ describe("createImageName", () => {
 
 describe("fetchAndSaveImage", () => {
   it("works", async () => {
-    fetchMock.get("http://localhost", 200);
+    fetchMock.mockResponseOnce("");
     await utils.fetchAndSaveImage(new URL("http://localhost"), {
       mode: "all",
       outputDir: "./out",

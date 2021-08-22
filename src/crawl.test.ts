@@ -1,7 +1,5 @@
+import "jest-fetch-mock";
 import { crawl } from "./crawl";
-import fetchMock from "node-fetch";
-
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 
 const url = new URL("http://localhost");
 
@@ -11,7 +9,7 @@ console.info = jest.fn();
 
 describe("crawl", () => {
   it("crawls", async () => {
-    fetchMock.get("http://localhost", 200);
+    fetchMock.mockResponseOnce("");
     await crawl(url, url, { mode: "all", outputDir: "./out" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });

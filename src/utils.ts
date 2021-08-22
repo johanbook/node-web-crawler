@@ -20,7 +20,8 @@ export async function fetchAndSaveImage(
   let resp: Response;
 
   try {
-    resp = await fetch(url);
+    // NB: URL should be string for fetch mock
+    resp = await fetch(url.href);
   } catch {
     /* eslint-disable-next-line no-console */
     console.error(chalk.red(`Failed to download ${url}`));

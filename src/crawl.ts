@@ -54,7 +54,7 @@ export async function crawl(
     chalk`{blue \u1433} {gray Crawling} {green ${url.host + url.pathname}}`
   );
 
-  const resp = await fetch(url);
+  const resp = await fetch(url.href);
   const html = await resp.text();
 
   const domOptions: ConstructorOptions = {};
