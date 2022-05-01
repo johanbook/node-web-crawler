@@ -1,5 +1,7 @@
 # node-web-crawler
 
+[![Tests](https://github.com/johanbook/node-web-crawler/actions/workflows/node.js.yml/badge.svg)](https://github.com/johanbook/node-web-crawler/actions/workflows/node.js.yml)
+
 A simplistic Nodejs CLI for web crawling images.
 
 ## Installation
